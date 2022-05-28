@@ -27,8 +27,9 @@ class STARFIGHTER_API ANaveAereaJugador : public ANaveAerea
 	UPROPERTY(Category = Camera, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		class USpringArmComponent* CameraBoom;
 
-	//Cola<class AProyectil*> ColaProyectiles;
-
+	//Cola<class AProyectil*> ColaProyectiles;	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Datos", meta = (AllowPrivateAccess = "true")) //Blueprint que podemos asignarle un "Dato" en este caso su vida
+		FString NaveActorName;
 public:
 	ANaveAereaJugador();
 	
@@ -74,7 +75,7 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
 private:
-
+	float Vida; //vida usada para la nave jugador
 	/* Flag to control firing  */
 	uint32 bCanFire : 1;
 
@@ -84,4 +85,6 @@ private:
 	float FireForwardValue;
 	float FireRightValue;
 
+
+	TMap<FString, int32>NaveInfo; //almacenara los datos y valores de mi NaveJgador
 };

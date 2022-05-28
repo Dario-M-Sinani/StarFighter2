@@ -16,12 +16,14 @@ class STARFIGHTER_API ANaveAereaEnemigo : public ANaveAerea
 private:
 	uint32 bCanFire : 1;
 	FTimerHandle TimerHandle_ShotTimerExpired;
+	FTimerHandle MemberTimerHandle;//caracteristica que usaremos en el BeginPlay
+	FTimerHandle MemberTimerHandle1;
 
 public:
 
 	ANaveAereaEnemigo();
 
-	FTimerHandle MemberTimerHandle;
+	
 
 	virtual void BeginPlay() override;
 
@@ -41,6 +43,19 @@ public:
 	void FireEnemigo();
 	void FireShotEnemigo(FVector FireDirectionEnemigo);
 	void ShotTimerExpired();
+
+public:
+	UFUNCTION()
+		virtual void NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal,
+			FVector NormalImpulse, const FHitResult& Hit)override;//esta funcion nos notifica cada golpe que de la clase.
+
+	TMap<FString, int32>RInfo;
+	//float Contador;
+
+
+
+	void ConteoBalas();
+	void MuestraBalasGastadas();
 
 
 };

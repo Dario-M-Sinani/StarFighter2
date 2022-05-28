@@ -6,19 +6,28 @@
 #include "NaveAereaJugador.h"
 #include "Kismet/GameplayStatics.h"
 #include "Proyectil.h"
+#include "StarFighterGameModeBase.h"
 
 ANaveAereaEnemigo::ANaveAereaEnemigo()
 {
+	Speed = 50.0f; // velocidad
 	GunOffset = FVector(90.f, 0.f, 0.f); //para la distancia de aparicion de la bala
-	FireRate = 1.0f;
+	FireRate = 5.0f;
 	bCanFire = true;
+
+	MovingTX = 0.0f;
+	MovingTY = 0.0f;
+
+	RInfo.Add("Disparo", 0);
 }
 
 void ANaveAereaEnemigo::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &ANaveAereaEnemigo::FireEnemigo, 2.0f, true, 4.0f);
+	GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &ANaveAereaEnemigo::FireEnemigo, 5.0f, true, 0.0f);
+
+	GetWorldTimerManager().SetTimer(MemberTimerHandle1, this, &ANaveAereaEnemigo::MuestraBalasGastadas, 60.0f, true, 60);//mostrara los disparos en 60 segundos
 
 }
 
@@ -68,6 +77,8 @@ void ANaveAereaEnemigo::FireEnemigo()
 	const FVector FireDirectionEnemigo = FVector(MovingTX, MovingTY, 0.0f).GetClampedToMaxSize(1.0f);
 
 	FireShotEnemigo(FireDirectionEnemigo);
+
+	ConteoBalas();
 }
 
 void ANaveAereaEnemigo::FireShotEnemigo(FVector FireDirectionEnemigo)
@@ -108,4 +119,44 @@ void ANaveAereaEnemigo::FireShotEnemigo(FVector FireDirectionEnemigo)
 void ANaveAereaEnemigo::ShotTimerExpired()
 {
 	bCanFire = true;
+}
+
+void ANaveAereaEnemigo::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
+{
+	AProyectil* Choque = Cast<AProyectil>(Other); //solo en caso de que choque con un proyectil sera ejecutada la funcion de Destroy()
+	if (Choque != nullptr)
+	{
+
+		Destroy();
+
+	}
+
+}
+
+void ANaveAereaEnemigo::ConteoBalas()
+{
+
+	FString VT = "Disparo";
+	for (auto& pair : RInfo)
+	{
+		if (pair.Key == VT)
+		{
+			if (pair.Value >= 0)
+			{
+				pair.Value = pair.Value + 1;
+
+			}
+		}
+	}
+
+}
+
+void ANaveAereaEnemigo::MuestraBalasGastadas()
+{
+
+	for (auto& Elem : RInfo)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("%s = %d"), *Elem.Key, Elem.Value));//mostramos en pantalla la cantidad de vida
+	}
+
 }

@@ -18,18 +18,27 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+
+	float ejeX; //daremos valores aleatorios 
+	float ejeY; //daremos valores aleatorios 
+
+	float qejeX;
+	float qejeY;
+	float contador;
+	FTimerHandle relojTimerHandle;
+	FTimerHandle relojTimerHandle1;
+
+
+
 public:
 	AStarFighterGameModeBase();
 
-	template<typename T>
-	T SpawnNave();
+	static int contadorBalas;
+
+	void SpawnNave();//funcionque hara aparecer una nave en en el mapa
+	void SpawnBuffnot();
 
 
 
 };
 
-template<typename T>
-T AStarFighterGameModeBase::SpawnNave() {
-	
-	return GetWorld()->SpawnActor<T>(FVector::ZeroVector, FRotator::ZeroRotator);
-}

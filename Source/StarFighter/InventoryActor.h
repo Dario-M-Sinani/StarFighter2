@@ -18,6 +18,11 @@ public:
 	// Sets default values for this actor's properties
 	AInventoryActor();
 
+	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadOnly)
+		float MoveSpeedInventory;
+
+	float MovingAXT;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -28,5 +33,8 @@ public:
 	
 	virtual void PickUp();
 	virtual void PutDown(FTransform TargetLocation);
+
+	FTimerHandle InvetoryTimerHandle;
+
 
 };

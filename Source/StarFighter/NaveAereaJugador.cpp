@@ -40,6 +40,12 @@ ANaveAereaJugador::ANaveAereaJugador()
 	FireForwardValue = 1.0f;
 	FireRightValue = 0.0f;
 
+
+	NaveInfo.Add("Vida", 100); //iniciamos con un dato de vida en 100
+	Vida = 100;//mi valor de vida sera 100
+
+	NaveInfo.Add("velocidad", 1000);
+
 	//const FVector MoveDirection = FVector(FireForwardValue, FireRightValue, 0.f).GetClampedToMaxSize(1.0f);
 
 	//const FRotator FireRotation = MoveDirection.Rotation();
@@ -61,6 +67,9 @@ ANaveAereaJugador::ANaveAereaJugador()
 	//	//UE_LOG(LogTemp, Warning, TEXT("SpawnLocation(X, Y) = %s, %s FireRotation(X, Y) =  s, s"), SpawnLocation.X, SpawnLocation.Y);
 	//	//UE_LOG(LogTemp, Warning, TEXT("World not nullptr"));
 	//}
+
+
+
 }
 
 void ANaveAereaJugador::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -205,6 +214,147 @@ void ANaveAereaJugador::NotifyHit(class UPrimitiveComponent* MyComp, AActor* Oth
 	if (InventoryItem != nullptr)
 	{
 		TakeItem(InventoryItem);
+
+		if (InventoryItem != nullptr)
+		{
+			int n = rand() % 6 + 1;
+
+			switch (n)
+			{
+			case 1:
+			{
+
+				for (auto& Elem : NaveInfo) //usando los datos de la nave
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("%s = %d"), *Elem.Key, Elem.Value));//mostramos en pantalla la cantidad de vida
+				}
+
+				FString nV = "Velocidad";
+				for (auto& pair : NaveInfo)
+				{
+					if (pair.Key == nV)
+					{
+						if (pair.Value > 0)
+						{
+							pair.Value = pair.Value + 100;
+							MoveSpeed = MoveSpeed + 100;
+						}
+					}
+				}
+			}
+			break;
+			case 2:
+			{
+				for (auto& Elem : NaveInfo) //usando los datos de la nave
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("%s = %d"), *Elem.Key, Elem.Value));//mostramos en pantalla la cantidad de vida
+				}
+				FString nV = "Velocidad";
+				for (auto& pair : NaveInfo)
+				{
+					if (pair.Key == nV)
+					{
+						if (pair.Value > 0)
+						{
+							pair.Value = pair.Value - 50;
+							MoveSpeed = MoveSpeed - 50;
+						}
+					}
+				}
+			}
+			break;
+			case 3:
+			{
+				for (auto& Elem : NaveInfo) //usando los datos de la nave
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("%s = %d"), *Elem.Key, Elem.Value));//mostramos en pantalla la cantidad de vida
+				}
+
+				FString nVD = "Vida";
+				for (auto& pair : NaveInfo)
+				{
+					if (pair.Key == nVD)
+					{
+						if (pair.Value > 0)
+						{
+							pair.Value = pair.Value + 10;
+
+							Vida = Vida + 10; //reducir la vida de 10 en 10 al recibir un impacto
+						}
+					}
+				}
+			}
+			break;
+			case 4:
+			{
+				for (auto& Elem : NaveInfo) //usando los datos de la nave
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("%s = %d"), *Elem.Key, Elem.Value));//mostramos en pantalla la cantidad de vida
+				}
+
+				FString nNV = "Vida";
+				for (auto& pair : NaveInfo)
+				{
+					if (pair.Key == nNV)
+					{
+						if (pair.Value > 0)
+						{
+							pair.Value = pair.Value - 10;
+
+							Vida = Vida - 10; //reducir la vida de 10 en 10 al recibir un impacto
+
+							if (Vida == 0) //si mi vida es igual a 0, entonces mi NaveJugador desaparece.
+							{
+
+
+								SetActorTickEnabled(false);
+								SetActorHiddenInGame(true);
+								SetActorEnableCollision(false);
+							}
+							break;
+						}
+					}
+				}
+			}
+			default:
+				break;
+			}
+		}
+	}
+
+
+
+
+	AProyectil* Choque = Cast<AProyectil>(Other);//cada vez que un Proyectil nos haga contacto, hara la siguiente funcion
+	if (Choque != nullptr)
+	{
+		for (auto& Elem : NaveInfo) //usando los datos de la nave
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("%s = %d"), *Elem.Key, Elem.Value));//mostramos en pantalla la cantidad de vida
+		}
+
+		FString n = "Vida";
+		for (auto& pair : NaveInfo)
+		{
+			if (pair.Key == n)
+			{
+				if (pair.Value >= 0)
+				{
+					pair.Value = pair.Value - 10;
+
+					Vida = Vida - 10; //reducir la vida de 10 en 10 al recibir un impacto
+
+					if (Vida == 0) //si mi vida es igual a 0, entonces mi NaveJugador desaparece.
+					{
+
+						SetActorTickEnabled(false);
+						SetActorHiddenInGame(true);
+						SetActorEnableCollision(false);
+					}
+					break;
+				}
+			}
+		}
 
 	}
 }
